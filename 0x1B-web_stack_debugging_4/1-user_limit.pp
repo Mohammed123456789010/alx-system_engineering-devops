@@ -1,22 +1,11 @@
-# This Puppet manifest configures the system to handle more open files for users
+# Reconfigure the OS for 'holberton' to login and open a file without any error message
 
-# Set the maximum number of open files
-file_line { 'increase_user_limit':
-  path  => '/etc/security/limits.conf',
-  line  => '* soft nofile 1024',
-  match => '^* soft nofile',
+exec { 'increase-hard-file-limit-holberton-user':
+  command => 'sed -i "/holberton hard/s/4/50000/" /etc/security/limits.conf',
+  path    => '/usr/local/bin/:/bin/'
 }
 
-file_line { 'increase_user_limit_hard':
-  path  => '/etc/security/limits.conf',
-  line  => '* hard nofile 4096',
-  match => '^* hard nofile',
-}
-
-# Ensure limits are applied for new sessions
-exec { 'reload_limits':
-  command => 'sysctl -p',
-  path    => '/usr/sbin:/sbin:/bin:/usr/bin',
-  refreshonly => true,
-  notify  => Exec['reload_limits'],
+exec { 'increase-soft-file-limit-for-holberton-user':
+  command => 'sed -i "/holberton soft/s/5/50000/" /etc/security/limits.conf',
+  path    => '/usr/local/bin/:/bin/'
 }
